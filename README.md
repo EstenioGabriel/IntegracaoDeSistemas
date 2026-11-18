@@ -135,25 +135,3 @@ curl -X POST http://localhost:3000/produtos/1/movimentar \
 | API nunca fica presa nos secundários | Publish com **publisher confirms** (ms) e resposta 200 imediata |
 | Erro no worker não trava a fila | 1ª falha reenfileira (`nack requeue`); falha em reentrega descarta com log |
 | Venda concorrente não estoura o estoque | `UPDATE` com guarda `.gte('estoque', quantidade)` |
-
-## Prova de resiliência (roteiro da apresentação)
-
-1. Com API + 3 workers rodando, **derrubar o worker de compras**
-   (Ctrl+C no terminal do `npm run worker:compras`)
-2. Fazer **2 vendas** que deixem o produto abaixo do estoque mínimo:
-   ```bash
-   curl -X POST http://localhost:3000/produtos/1/movimentar \
-     -H 'Content-Type: application/json' -d '{"tipo":"SAIDA","quantidade":5}'
-   curl -X POST http://localhost:3000/produtos/1/movimentar \
-     -H 'Content-Type: application/json' -d '{"tipo":"SAIDA","quantidade":2}'
-   ```
-   → **ambas respondem 200 OK** (a API não depende dos workers)
-3. Abrir o painel `http://localhost:15672` → **Queues** →
-   `fila.compras` exibe **2 mensagens "Ready"** retidas em disco
-   (as outras filas esvaziam normalmente)
-4. **Religar o worker**: `npm run worker:compras`
-5. Ele consome o backlog, grava os 2 alertas no Supabase
-   (`GET /alertas` ou Table Editor) e dá `ack` — **zero perda de dados**
-
-Bônus: `docker compose stop` e `docker compose start` reiniciam o broker
-sem perder filas/mensagens (duráveis + persistentes).
