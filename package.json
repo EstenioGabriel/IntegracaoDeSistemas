@@ -1,0 +1,30 @@
+{
+  "name": "integracaodesistemas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "worker:auditoria": "node workers/workerAuditoria.js",
+    "worker:compras": "node workers/workerCompras.js",
+    "worker:vitrine": "node workers/workerVitrine.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EstenioGabriel/IntegracaoDeSistemas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EstenioGabriel/IntegracaoDeSistemas/issues"
+  },
+  "homepage": "https://github.com/EstenioGabriel/IntegracaoDeSistemas#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.1",
+    "amqplib": "^2.4.0",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0"
+  }
+}
